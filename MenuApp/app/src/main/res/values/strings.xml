@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Menu-Practice-App</string>
+    <string name="label_main_screen">Main App Screen</string>
+    <string name="button_label_settings">Settings</string>
+    <string name="language">שפה</string>
+    <string name="toast_message">You\'ve clicked on</string>
+    <string name="operation_method">אופן הפעלה</string>
+    <string name="pinpad_settings">PinPad הגדרת</string>
+    <string name="debug_button_label">Debug</string>
+    <string name="ashrait_db_button_label">Ashrait.db</string>
+    <string name="refound_button_label">זיכוי</string>
+    <string name="payments_button_label">תשלומים</string>
+    <string name="credit_button_label">קרדיט</string>
+    <string name="coin_button_label">מטבע</string>
+    <string name="addedd_button_label">הצמדה</string>
+    <string name="recipt_button_label">קבלה למוכר</string>
+    <string name="quick_deal_button_label">עסקה מהירה</string>
+    <string name="fast_button_label">מצב מכירה מהיר</string>
+    <string name="float_button_label">אגורות</string>
+    <string name="manual_button_label">כפתור ידני</string>
+    <string name="system_button_label">System</string>
+    <string name="request_button_label">בקשות</string>
+    <string name="preference_button_label">העדפות</string>
+    <string name="count_initial_value">0</string>
+</resources>
