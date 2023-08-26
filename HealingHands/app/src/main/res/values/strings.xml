@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">HealingHands</string>
+    <string name="hallo_grandpap">שלום שבא</string>
+    <string name="start">Start</string>
+    <string name="time">TIME</string>
+    <string name="stop">Stop</string>
+    <string name="input_healing_time">אנא הכנס זמן טיפול</string>
+    <string name="minutes">דקות</string>
+    <string name="_60">60</string>
+    <string name="healing_time">זמן טיפול:</string>
+    <string name="interval_time">זמן אינטרוול:</string>
+    <string name="_3">3</string>
+</resources>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="24sp"
+        android:text="@string/hallo_grandpap"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:gravity="center_horizontal"
+        android:paddingTop="14sp"
+        android:paddingBottom="14sp"
+        android:textColor="@color/black"
+        android:textSize="96sp" />
+
+    <LinearLayout
+        android:id="@+id/llImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTimer"
+        android:orientation="horizontal"
+        android:paddingBottom="14sp">
+
+        <ImageView
+            android:id="@+id/ivHands"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:src="@drawable/hands"
+            tools:ignore="ImageContrastCheck" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llMinutesInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llImage"
+        android:orientation="horizontal"
+        android:paddingLeft="34sp"
+        android:paddingRight="34sp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/healing_time"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/etTimeInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:hint="@string/_60"
+            android:inputType="number|numberSigned"
+            android:minWidth="48dp"
+            android:selectAllOnFocus="true"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingEnd="8dp"
+            android:text="@string/minutes"
+            android:textSize="24sp"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llIntervalInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llMinutesInput"
+        android:orientation="horizontal"
+        android:paddingLeft="34sp"
+        android:paddingRight="34sp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/interval_time"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/etIntervalInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:hint="@string/_3"
+            android:inputType="number|numberSigned"
+            android:minWidth="48dp"
+            android:selectAllOnFocus="true"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvMinute2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingEnd="8dp"
+            android:text="@string/minutes"
+            android:textSize="24sp"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/llButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="24sp">
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:elevation="8dp"
+            android:text="@string/start"
+            android:textSize="34sp"
+            tools:ignore="TextContrastCheck" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
