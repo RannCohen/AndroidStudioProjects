@@ -1,6 +1,5 @@
 package com.rc.healinghands;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -10,19 +9,20 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
-    LinearLayout llTextInput, llIntervalInput, llImage;
-    RelativeLayout mainLayout;
-    TextView tvTimer, tvTitle;
+    LinearLayout llTextInput, llIntervalInput, llMainActivity;
+    TextView tvTimer;
+    ImageView ivHands;
     EditText etTimeInput, etIntervalInput;
     Button btnStart;
     boolean buttonMode = true; // true = start, false = stop
@@ -36,16 +36,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.i(TAG, "onCreate");
+
         NotificationManagerCompat.from(this).cancelAll();
-        mainLayout = findViewById(R.id.theme);
+
+        llMainActivity = findViewById(R.id.llMainActivity);
         llTextInput = findViewById(R.id.llMinutesInput);
         llIntervalInput = findViewById(R.id.llIntervalInput);
-        llImage = findViewById(R.id.llImage);
         tvTimer = findViewById(R.id.tvTimer);
-        btnStart = findViewById(R.id.btnStart);
+        ivHands = findViewById(R.id.ivHands);
+        btnStart = findViewById(R.id.btnStartPause);
         etTimeInput = findViewById(R.id.etTimeInput);
         etIntervalInput = findViewById(R.id.etIntervalInput);
-        tvTitle = findViewById(R.id.tvTitle);
+
         MediaPlayer shalom = MediaPlayer.create(MainActivity.this, R.raw.shalom);
         shalom.start();
     }
@@ -66,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
                                 btnStart.setBackgroundColor(getResources().getColor(R.color.red));
                                 llTextInput.setVisibility(View.GONE);
                                 llIntervalInput.setVisibility(View.GONE);
-                                llImage.setVisibility(View.GONE);
-                                tvTitle.setVisibility(View.GONE);
+                                ivHands.setVisibility(View.GONE);
                                 tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
-                                mainLayout.setBackgroundColor(getResources().getColor(R.color.black));
+                                llMainActivity.setBackgroundColor(getResources().getColor(R.color.black));
                                 tvTimer.setTextColor(getResources().getColor(R.color.white));
+                                tvTimer.setVisibility(View.VISIBLE);
                                 long timeInput = Long.parseLong(etTimeInput.getText().toString()) * 1000 * 60;
                                 if (!etIntervalInput.getText().toString().isEmpty()) {
                                     timeInterval = Long.parseLong(etIntervalInput.getText().toString());
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                                         if ((timeInterval != 0) && (Minutes % timeInterval == 0) && (Seconds == 0)) {
                                             playSmallDing();
                                         }
-                                        String displayTime = String.format("%02d", Minutes) + ":" + String.format("%02d", Seconds);
+                                        String displayTime = String.format(Locale.getDefault(), "%02d", Minutes) + ":" + String.format(Locale.getDefault(), "%02d", Seconds);
                                         tvTimer.setText(displayTime);
                                         Log.i(TAG, "Display Time: " + displayTime);
                                     }
@@ -94,19 +96,17 @@ public class MainActivity extends AppCompatActivity {
                                     public void onFinish() {
                                         String done = "Done!";
                                         tvTimer.setText(done);
-                                        MediaPlayer big_ding = MediaPlayer.create(MainActivity.this, R.raw.big_ding);
-                                        big_ding.start();
                                         Log.i(TAG, done);
+                                        playBigDing();
                                         buttonMode = true;
                                         btnStart.setText(R.string.start);
                                         btnStart.setBackgroundColor(getResources().getColor(R.color.green));
                                         tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
-                                        mainLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                                        llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
                                         tvTimer.setTextColor(getResources().getColor(R.color.black));
                                         llTextInput.setVisibility(View.VISIBLE);
                                         llIntervalInput.setVisibility(View.VISIBLE);
-                                        llImage.setVisibility(View.VISIBLE);
-                                        tvTitle.setVisibility(View.VISIBLE);
+                                        ivHands.setVisibility(View.VISIBLE);
                                     }
                                 }.start();
                             } else {
@@ -122,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             llTextInput.setVisibility(View.VISIBLE);
                             llIntervalInput.setVisibility(View.VISIBLE);
-                            llImage.setVisibility(View.VISIBLE);
-                            tvTitle.setVisibility(View.VISIBLE);
+                            ivHands.setVisibility(View.VISIBLE);
                             tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
-                            mainLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                            llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
                             tvTimer.setTextColor(getResources().getColor(R.color.black));
+                            tvTimer.setVisibility(View.GONE);
                             buttonMode = true;
                             btnStart.setText(R.string.start);
                             btnStart.setBackgroundColor(getResources().getColor(R.color.green));
@@ -137,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void playBigDing() {
+        Log.i(TAG, "Big Ding");
+        MediaPlayer big_ding = MediaPlayer.create(MainActivity.this, R.raw.big_ding);
+        big_ding.start();
     }
 
     private void playSmallDing() {
