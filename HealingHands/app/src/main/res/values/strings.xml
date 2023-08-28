@@ -2,6 +2,7 @@
     <string name="app_name">HealingHands</string>
     <string name="hallo_grandpap">שלום איל</string>
     <string name="start">Start</string>
+    <string name="pause">Pause</string>
     <string name="time">TIME</string>
     <string name="stop">Stop</string>
     <string name="input_healing_time">אנא הכנס זמן טיפול</string>

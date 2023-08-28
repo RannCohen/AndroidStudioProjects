@@ -1,19 +1,20 @@
 package com.rc.healinghands;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
-
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.util.Locale;
 
@@ -21,12 +22,13 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
     LinearLayout llMinutesLine, llIntervalLine, llMainActivity, llButtons;
     TextView tvTimer;
+    ImageView ivHands;
     EditText etMinuteInput, etIntervalInput;
     Button btnStartPause, btnReset;
-    boolean isTimerRunning = false; // true = show stop button , false = show start button
+    boolean timerIsRunning = false; // true = show stop button , false = show start button
     CountDownTimer timer;
 
-    long TimeBuff, UpdateTime = 0L, timeInterval = 0L;
+    long TimeBuff, UpdateTime = 0L, timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, endTime;
     int Seconds, Minutes;
 
     @Override
@@ -36,68 +38,22 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate");
         NotificationManagerCompat.from(this).cancelAll();
         initXml();
-        playWelcome();
+        SoundHandler.playWelcomeSound(this);
+        updateCountDownText(timeLeftInMillis, false);
+        updateButtons();
     }
-    
+
     View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (v.getId() == btnStartPause.getId()) {
-                if (!isTimerRunning) {
-                    if (!(etMinuteInput.getText().toString().isEmpty())) {
-                        isTimerRunning = true;
-                        btnStartPause.setText(R.string.stop);
-                        btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
-                        long timeInput = Long.parseLong(etMinuteInput.getText().toString()) * 1000 * 60;
-                        if (!etIntervalInput.getText().toString().isEmpty()) {
-                            timeInterval = Long.parseLong(etIntervalInput.getText().toString());
-                        }
-                        Log.i(TAG, "Time input = " + Long.parseLong(etMinuteInput.getText().toString()) + " minutes");
-                        Log.i(TAG, "Time intervals = " + timeInterval + " Minutes");
-                        timer = new CountDownTimer(timeInput, 1000) {
-                            public void onTick(long millisUntilFinished) {
-                                UpdateTime = TimeBuff + millisUntilFinished;
-                                Seconds = (int) (UpdateTime / 1000);
-                                Minutes = Seconds / 60;
-                                Seconds = Seconds % 60;
-                                if ((timeInterval != 0) && (Minutes % timeInterval == 0) && (Seconds == 0)) {
-                                    playSmallDing();
-                                }
-                                String displayTime = String.format(Locale.getDefault(), "%02d", Minutes) + ":" + String.format(Locale.getDefault(), "%02d", Seconds);
-                                tvTimer.setText(displayTime);
-                                Log.i(TAG, "Display Time: " + displayTime);
-                            }
-
-                            public void onFinish() {
-                                String done = "Done!";
-                                tvTimer.setText(done);
-                                Log.i(TAG, done);
-                                playBigDing();
-                                isTimerRunning = false;
-                                btnStartPause.setText(R.string.start);
-                                btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
-                            }
-                        }.start();
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast toast = Toast.makeText(getApplicationContext(), R.string.input_healing_time, Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM, 0, 250);
-                                toast.show();
-                            }
-                        });
-                    }
+                if (timerIsRunning) {
+                    pauseTimer();
                 } else {
-                    isTimerRunning = false;
-                    btnStartPause.setText(R.string.start);
-                    btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
-                    timer.cancel();
-                    tvTimer.setText("");
+                    startTimer();
                 }
             } else if (v.getId() == btnReset.getId()) {
-
-
+                resetTimer();
             }
         }
     };
@@ -105,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private void initXml() {
         llMainActivity = findViewById(R.id.llMainActivity);
         tvTimer = findViewById(R.id.tvTimer);
+        ivHands = findViewById(R.id.ivHands);
         llMinutesLine = findViewById(R.id.llMinutesLine);
         etMinuteInput = findViewById(R.id.etMinuteInput);
         llIntervalLine = findViewById(R.id.llIntervalLine);
@@ -115,22 +72,150 @@ public class MainActivity extends AppCompatActivity {
         btnStartPause = findViewById(R.id.btnStartPause);
         btnStartPause.setOnClickListener(buttonsListener);
     }
-    
-    private void playWelcome() {
-        MediaPlayer shalom = MediaPlayer.create(MainActivity.this, R.raw.shalom);
-        shalom.start();
-    }
-    
-    private void playBigDing() {
-        Log.i(TAG, "Big Ding");
-        MediaPlayer big_ding = MediaPlayer.create(MainActivity.this, R.raw.big_ding);
-        big_ding.start();
+
+    private void startTimer() {
+        if (getMinuteInput()) {
+            setTimerDark();
+            endTime = System.currentTimeMillis() + timeLeftInMillis;
+            timerIsRunning = true;
+            updateButtons();
+            getTimeIntervalInput();
+            timer = new CountDownTimer(timeInput, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    timeLeftInMillis = millisUntilFinished;
+                    updateCountDownText(timeLeftInMillis, true);
+                }
+
+                public void onFinish() {
+                    String done = "Done!";
+                    tvTimer.setText(done);
+                    Log.i(TAG, done);
+                    timerIsRunning = false;
+                    setTimerNormal();
+                    SoundHandler.playBigDing(MainActivity.this);
+                    updateButtons();
+                }
+            }.start();
+        }
     }
 
-    private void playSmallDing() {
-        Log.i(TAG, "Small Ding");
-        MediaPlayer small_ding = MediaPlayer.create(MainActivity.this, R.raw.small_ding);
-        small_ding.start();
+    private void pauseTimer() {
+        timerIsRunning = false;
+        timer.cancel();
+        setTimerNormal();
+        updateButtons();
+    }
+
+    private void resetTimer() {
+        timeLeftInMillis = timeInput;
+        updateCountDownText(timeLeftInMillis, false);
+        setTimerNormal();
+        updateButtons();
+    }
+
+    private void updateCountDownText(long millisUntilFinished, boolean playDing) {
+        UpdateTime = TimeBuff + millisUntilFinished;
+        Seconds = (int) (UpdateTime / 1000);
+        Minutes = Seconds / 60;
+        Seconds = Seconds % 60;
+        if ((timeIntervalInput != 0) && (Minutes % timeIntervalInput == 0) && (Seconds == 0) && (Minutes != 0) && playDing) {
+            SoundHandler.playSmallDing(MainActivity.this);
+        }
+        String displayTime = String.format(Locale.getDefault(), "%02d", Minutes) + ":" + String.format(Locale.getDefault(), "%02d", Seconds);
+        tvTimer.setText(displayTime);
+        Log.i(TAG, "Display Time: " + displayTime);
+    }
+
+    private void updateButtons() {
+        if (timerIsRunning) {
+            btnReset.setVisibility(View.GONE);
+            btnStartPause.setText(R.string.stop);
+            btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
+        } else {
+            btnStartPause.setText(R.string.start);
+            btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
+
+            if (timeLeftInMillis < 1000 && timeInput != -1) {
+                btnStartPause.setVisibility(View.GONE);
+            } else {
+                btnStartPause.setVisibility(View.VISIBLE);
+            }
+
+            if (timeLeftInMillis < timeInput) {
+                btnReset.setVisibility(View.VISIBLE);
+            } else {
+                btnReset.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setTimerDark() {
+        llMainActivity.setBackgroundColor(getResources().getColor(R.color.black));
+        tvTimer.setTextColor(getResources().getColor(R.color.white));
+        tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
+        ivHands.setVisibility(View.GONE);
+        llMinutesLine.setVisibility(View.GONE);
+        llIntervalLine.setVisibility(View.GONE);
+    }
+
+    private void setTimerNormal() {
+        llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
+        tvTimer.setTextColor(getResources().getColor(R.color.black));
+        tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
+        ivHands.setVisibility(View.VISIBLE);
+        llMinutesLine.setVisibility(View.VISIBLE);
+        llIntervalLine.setVisibility(View.VISIBLE);
+    }
+
+    private boolean getMinuteInput() {
+        if (!(etMinuteInput.getText().toString().isEmpty())) {
+            timeInput = Long.parseLong(etMinuteInput.getText().toString()) * 1000 * 60;
+            timeLeftInMillis = timeInput;
+            Log.i(TAG, "Time input = " + Long.parseLong(etMinuteInput.getText().toString()) + " minutes");
+            return true;
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(getApplicationContext(), R.string.input_healing_time, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 250);
+                    toast.show();
+                }
+            });
+            return false;
+        }
+    }
+
+    private void getTimeIntervalInput() {
+        if (!etIntervalInput.getText().toString().isEmpty()) {
+            timeIntervalInput = Long.parseLong(etIntervalInput.getText().toString());
+        }
+        Log.i(TAG, "Time intervals = " + timeIntervalInput + " Minutes");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("millisLeft", timeLeftInMillis);
+        outState.putBoolean("timerRunning", timerIsRunning);
+        outState.putLong("endTime", endTime);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        timeLeftInMillis = savedInstanceState.getLong("millisLeft");
+        timerIsRunning = savedInstanceState.getBoolean("timerRunning");
+        updateCountDownText(timeLeftInMillis, true);
+        updateButtons();
+
+        if (timerIsRunning) {
+            endTime = savedInstanceState.getLong("endTime");
+            timeLeftInMillis = endTime - System.currentTimeMillis();
+            startTimer();
+        }
     }
 
     @Override
@@ -138,4 +223,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         NotificationManagerCompat.from(this).notifyAll();
     }
+
 }
