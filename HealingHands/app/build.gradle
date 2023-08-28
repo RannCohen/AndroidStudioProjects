@@ -11,8 +11,8 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 1
-        versionName "1.0"
-
+        versionName "1.0.0"
+        setProperty("archivesBaseName", "Healing Hands-$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
