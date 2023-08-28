@@ -13,9 +13,8 @@
         android:id="@+id/tvTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
         android:gravity="center_horizontal"
-        android:paddingTop="8sp"
-        android:paddingBottom="8sp"
         android:textColor="@color/black"
         android:textSize="48sp" />
 
@@ -24,18 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
-        android:paddingBottom="8sp"
         android:src="@drawable/hands"
         tools:ignore="ImageContrastCheck" />
 
     <LinearLayout
-        android:id="@+id/llMinutesInput"
+        android:id="@+id/llMinutesLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,7 +41,7 @@
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/etTimeInput"
+            android:id="@+id/etMinuteInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -57,7 +54,6 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tvMinute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,13 +64,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llIntervalInput"
+        android:id="@+id/llIntervalLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -96,7 +91,6 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tvMinute2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -108,14 +102,35 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnStartPause"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/green"
-        android:elevation="10dp"
-        android:text="@string/start"
-        android:textSize="24sp"
-        tools:ignore="TextContrastCheck" />
+        android:gravity="center"
+        android:id="@+id/llButtons">
 
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/blue"
+            android:elevation="10dp"
+            android:text="@string/reset"
+            android:textSize="20sp"
+            android:layout_marginEnd="5dp"
+            tools:ignore="TextContrastCheck"
+            style="@android:style/MediaButton" />
+
+        <Button
+            android:id="@+id/btnStartPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:elevation="10dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/start"
+            android:textSize="20sp"
+            tools:ignore="TextContrastCheck"
+            style="@android:style/MediaButton"/>
+
+    </LinearLayout>
 </LinearLayout>
