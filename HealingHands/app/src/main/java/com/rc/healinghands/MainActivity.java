@@ -28,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
     boolean timerIsRunning = false; // true = show stop button , false = show start button
     CountDownTimer timer;
 
-    long TimeBuff, UpdateTime = 0L, timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, endTime;
-    int Seconds, Minutes;
+    long timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, endTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +73,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        if (getMinuteInput()) {
+        if (getMinuteInput() || timeLeftInMillis > 0) {
             setTimerDark();
             endTime = System.currentTimeMillis() + timeLeftInMillis;
             timerIsRunning = true;
             updateButtons();
-            getTimeIntervalInput();
-            timer = new CountDownTimer(timeInput, 1000) {
+            timer = new CountDownTimer(timeLeftInMillis, 1000) {
 
                 public void onTick(long millisUntilFinished) {
                     timeLeftInMillis = millisUntilFinished;
-                    updateCountDownText(timeLeftInMillis, true);
+                    updateCountDownText(timeLeftInMillis, getTimeIntervalInput());
                 }
 
                 public void onFinish() {
@@ -109,20 +107,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void resetTimer() {
         timeLeftInMillis = timeInput;
-        updateCountDownText(timeLeftInMillis, false);
+        updateCountDownText(timeLeftInMillis, getTimeIntervalInput());
         setTimerNormal();
         updateButtons();
     }
 
     private void updateCountDownText(long millisUntilFinished, boolean playDing) {
-        UpdateTime = TimeBuff + millisUntilFinished;
-        Seconds = (int) (UpdateTime / 1000);
-        Minutes = Seconds / 60;
-        Seconds = Seconds % 60;
-        if ((timeIntervalInput != 0) && (Minutes % timeIntervalInput == 0) && (Seconds == 0) && (Minutes != 0) && playDing) {
+        int minutes = (int) (millisUntilFinished / 1000) / 60;
+        int seconds = (int) (millisUntilFinished / 1000) % 60;
+
+        if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0) && playDing) {
             SoundHandler.playSmallDing(MainActivity.this);
         }
-        String displayTime = String.format(Locale.getDefault(), "%02d", Minutes) + ":" + String.format(Locale.getDefault(), "%02d", Seconds);
+        String displayTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
         tvTimer.setText(displayTime);
         Log.i(TAG, "Display Time: " + displayTime);
     }
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateButtons() {
         if (timerIsRunning) {
             btnReset.setVisibility(View.GONE);
-            btnStartPause.setText(R.string.stop);
+            btnStartPause.setText(R.string.pause);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
         } else {
             btnStartPause.setText(R.string.start);
@@ -173,8 +170,9 @@ public class MainActivity extends AppCompatActivity {
             timeInput = Long.parseLong(etMinuteInput.getText().toString()) * 1000 * 60;
             timeLeftInMillis = timeInput;
             Log.i(TAG, "Time input = " + Long.parseLong(etMinuteInput.getText().toString()) + " minutes");
+            etMinuteInput.setText("");
             return true;
-        } else {
+        } else if (timeLeftInMillis == 0) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -183,21 +181,24 @@ public class MainActivity extends AppCompatActivity {
                     toast.show();
                 }
             });
-            return false;
+        } else {
+            return true;
         }
+        return false;
     }
 
-    private void getTimeIntervalInput() {
+    private boolean getTimeIntervalInput() {
         if (!etIntervalInput.getText().toString().isEmpty()) {
             timeIntervalInput = Long.parseLong(etIntervalInput.getText().toString());
         }
-        Log.i(TAG, "Time intervals = " + timeIntervalInput + " Minutes");
+        return timeIntervalInput > 0;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("millisLeft", timeLeftInMillis);
+        outState.putLong("intervals", timeIntervalInput);
         outState.putBoolean("timerRunning", timerIsRunning);
         outState.putLong("endTime", endTime);
     }
@@ -208,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
         timeLeftInMillis = savedInstanceState.getLong("millisLeft");
         timerIsRunning = savedInstanceState.getBoolean("timerRunning");
-        updateCountDownText(timeLeftInMillis, true);
+        timeIntervalInput = savedInstanceState.getLong("intervals");
+        updateCountDownText(timeLeftInMillis, getTimeIntervalInput());
         updateButtons();
 
         if (timerIsRunning) {
