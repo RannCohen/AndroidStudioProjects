@@ -3,6 +3,7 @@ package com.rc.healinghands;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         llMainActivity.setBackgroundColor(getResources().getColor(R.color.black));
         tvTimer.setTextColor(getResources().getColor(R.color.white));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
+        tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 150f);
         ivHands.setVisibility(View.GONE);
         llMinutesLine.setVisibility(View.GONE);
         llIntervalLine.setVisibility(View.GONE);
@@ -160,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
         tvTimer.setTextColor(getResources().getColor(R.color.black));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
+        tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48f);
         ivHands.setVisibility(View.VISIBLE);
         llMinutesLine.setVisibility(View.VISIBLE);
         llIntervalLine.setVisibility(View.VISIBLE);
