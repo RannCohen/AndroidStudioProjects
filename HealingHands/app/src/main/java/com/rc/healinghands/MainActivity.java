@@ -6,7 +6,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,12 +41,15 @@ public class MainActivity extends AppCompatActivity {
         SoundHandler.playWelcomeSound(this);
         updateCountDownText(timeLeftInMillis, false);
         updateButtons();
+        etMinuteInput.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (v.getId() == btnStartPause.getId()) {
+                Utils.hideKeyboard(MainActivity.this, v);
                 if (timerIsRunning) {
                     pauseTimer();
                 } else {
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         llMainActivity.setBackgroundColor(getResources().getColor(R.color.black));
         tvTimer.setTextColor(getResources().getColor(R.color.white));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
         tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 150f);
         ivHands.setVisibility(View.GONE);
         llMinutesLine.setVisibility(View.GONE);
@@ -162,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
         tvTimer.setTextColor(getResources().getColor(R.color.black));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.grey));
         tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48f);
         ivHands.setVisibility(View.VISIBLE);
         llMinutesLine.setVisibility(View.VISIBLE);
