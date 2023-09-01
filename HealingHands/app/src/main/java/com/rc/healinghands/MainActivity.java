@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Locale;
 
@@ -42,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume");
         NotificationManagerCompat.from(MainActivity.this).cancelAll();
+        updateCountDownText(timeLeftInMillis);
+        updateButtons();
         if (!timerIsRunning) {
             SoundHandler.playWelcomeSound(this);
         }
-        updateCountDownText(timeLeftInMillis);
-        updateButtons();
     }
 
     View.OnClickListener buttonsListener = new View.OnClickListener() {
@@ -137,9 +139,11 @@ public class MainActivity extends AppCompatActivity {
         if (timerIsRunning) {
             btnReset.setVisibility(View.GONE);
             btnStartPause.setText(R.string.pause);
+            btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.pause_sign), null);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
         } else {
             btnStartPause.setText(R.string.start);
+            btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.play_triangle), null);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
 
             if (timeLeftInMillis < 1000 && timeInput != -1) {
@@ -211,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        timer.cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
         try {
             NotificationManagerCompat.from(MainActivity.this).notifyAll();
         } catch (RuntimeException e) {

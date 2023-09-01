@@ -115,6 +115,7 @@
             android:backgroundTint="@color/blue"
             android:elevation="10dp"
             android:text="@string/reset"
+            android:drawableRight="@drawable/reset_sign"
             android:textSize="20sp"
             android:layout_marginEnd="5dp"
             tools:ignore="TextContrastCheck"
@@ -129,6 +130,7 @@
             android:layout_marginStart="5dp"
             android:text="@string/start"
             android:textSize="20sp"
+            android:drawableRight="@drawable/play_triangle"
             tools:ignore="TextContrastCheck"
             style="@android:style/MediaButton"/>
 
