@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -38,11 +39,18 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate");
         NotificationManagerCompat.from(this).cancelAll();
         initXml();
-        SoundHandler.playWelcomeSound(this);
         updateCountDownText(timeLeftInMillis, false);
         updateButtons();
         etMinuteInput.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!timerIsRunning) {
+            SoundHandler.playWelcomeSound(this);
+        }
     }
 
     View.OnClickListener buttonsListener = new View.OnClickListener() {
@@ -156,10 +164,6 @@ public class MainActivity extends AppCompatActivity {
         tvTimer.setTextColor(getResources().getColor(R.color.white));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
-        tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 150f);
-        ivHands.setVisibility(View.GONE);
-        llMinutesLine.setVisibility(View.GONE);
-        llIntervalLine.setVisibility(View.GONE);
     }
 
     private void setTimerNormal() {
@@ -167,10 +171,6 @@ public class MainActivity extends AppCompatActivity {
         tvTimer.setTextColor(getResources().getColor(R.color.black));
         tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.grey));
-        tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48f);
-        ivHands.setVisibility(View.VISIBLE);
-        llMinutesLine.setVisibility(View.VISIBLE);
-        llIntervalLine.setVisibility(View.VISIBLE);
     }
 
     private boolean getMinuteInput() {
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("millisLeft", timeLeftInMillis);
         outState.putLong("intervals", timeIntervalInput);
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         timeLeftInMillis = savedInstanceState.getLong("millisLeft");
@@ -231,7 +231,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NotificationManagerCompat.from(this).notifyAll();
+        try {
+            NotificationManagerCompat.from(this).notifyAll();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 
 }
