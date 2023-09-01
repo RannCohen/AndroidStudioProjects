@@ -3,7 +3,9 @@
     <style name="Base.Theme.HealingHands" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
     </style>
+
 
     <style name="Theme.HealingHands" parent="Base.Theme.HealingHands" />
 

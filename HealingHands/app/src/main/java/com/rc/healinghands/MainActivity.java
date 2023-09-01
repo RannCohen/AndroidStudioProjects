@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startTimer() {
         if (getMinuteInput() || timeLeftInMillis > 0) {
-            setTimerDark();
             endTime = System.currentTimeMillis() + timeLeftInMillis;
             timerIsRunning = true;
             updateButtons();
@@ -102,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                     tvTimer.setText(done);
                     Log.i(TAG, done);
                     timerIsRunning = false;
-                    setTimerNormal();
                     SoundHandler.playBigDing(MainActivity.this);
                     updateButtons();
                 }
@@ -113,14 +111,12 @@ public class MainActivity extends AppCompatActivity {
     private void pauseTimer() {
         timerIsRunning = false;
         timer.cancel();
-        setTimerNormal();
         updateButtons();
     }
 
     private void resetTimer() {
         timeLeftInMillis = timeInput;
         updateCountDownText(timeLeftInMillis, getTimeIntervalInput());
-        setTimerNormal();
         updateButtons();
     }
 
@@ -157,20 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 btnReset.setVisibility(View.GONE);
             }
         }
-    }
-
-    private void setTimerDark() {
-        llMainActivity.setBackgroundColor(getResources().getColor(R.color.black));
-        tvTimer.setTextColor(getResources().getColor(R.color.white));
-        tvTimer.setBackgroundColor(getResources().getColor(R.color.black));
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
-    }
-
-    private void setTimerNormal() {
-        llMainActivity.setBackgroundColor(getResources().getColor(R.color.white));
-        tvTimer.setTextColor(getResources().getColor(R.color.black));
-        tvTimer.setBackgroundColor(getResources().getColor(R.color.white));
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.grey));
     }
 
     private boolean getMinuteInput() {
@@ -237,5 +219,4 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 }
