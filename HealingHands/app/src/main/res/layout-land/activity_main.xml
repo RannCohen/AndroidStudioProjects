@@ -19,6 +19,16 @@
         android:textColor="@color/white"
         android:textSize="150sp" />
 
+    <Chronometer
+        android:id="@+id/chTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/green"
+        android:textSize="150sp"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/ivHands"
         android:layout_width="match_parent"
@@ -26,7 +36,7 @@
         android:importantForAccessibility="no"
         android:src="@drawable/hands"
         tools:ignore="ImageContrastCheck"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/llMinutesLine"
