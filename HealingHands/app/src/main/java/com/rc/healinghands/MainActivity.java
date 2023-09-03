@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     EditText etMinuteInput, etIntervalInput;
     Button btnStartPause, btnReset;
     boolean timerIsRunning = false; // true = show stop button , false = show start button
-    CountDownTimer timer;
+    CountDownTimer countDownTimer;
 
     long timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, endTime;
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         endTime = System.currentTimeMillis() + timeLeftInMillis;
 
         getTimeIntervalInput();
-        timer = new CountDownTimer(timeLeftInMillis, 1000) {
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void pauseTimer() {
         timerIsRunning = false;
-        timer.cancel();
+        countDownTimer.cancel();
         updateButtons();
     }
 
@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (timer != null) {
-            timer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
         try {
             NotificationManagerCompat.from(MainActivity.this).notifyAll();
