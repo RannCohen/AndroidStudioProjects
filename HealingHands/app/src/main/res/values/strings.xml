@@ -9,7 +9,7 @@
     <string name="minutes">דקות</string>
     <string name="_60">60</string>
     <string name="healing_time">זמן טיפול:</string>
-    <string name="interval_time">מרווח זמן:</string>
+    <string name="interval_time">צליל בכל:</string>
     <string name="_3">3</string>
     <string name="reset">Reset</string>
 </resources>
