@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i(TAG, "onResume");
         NotificationManagerCompat.from(MainActivity.this).cancelAll();
-        updateCountDownText(timeLeftInMillis);
-        updateButtons();
         if (!countDownIsRunning && !countUpIsRunning) {
             SoundHandler.playWelcomeSound(this);
         }
+        updateCountDownText(timeLeftInMillis);
+        updateButtons();
         if (countUpIsRunning) {
             tvTimer.setVisibility(View.GONE);
             countUpTimer.setVisibility(View.VISIBLE);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 tvTimer.setText(done);
                 Log.i(TAG, done);
                 countDownIsRunning = false;
-                SoundHandler.playBigDing(MainActivity.this);
+                SoundHandler.playSmallDing(MainActivity.this);
                 updateButtons();
                 tvTimer.setVisibility(View.GONE);
                 countUpTimer.setVisibility(View.VISIBLE);
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         int seconds = (int) (millisUntilFinished / 1000) % 60;
 
         if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
-            SoundHandler.playSmallDing(MainActivity.this);
+            SoundHandler.playBigDing(MainActivity.this);
         }
         String displayTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
         tvTimer.setText(displayTime);
