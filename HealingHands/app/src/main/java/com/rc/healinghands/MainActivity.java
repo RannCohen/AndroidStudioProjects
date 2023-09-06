@@ -24,15 +24,15 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
-    LinearLayout llMinutesLine, llIntervalLine, llMainActivity, llButtons;
+    LinearLayout llPrepareLine, llMinutesLine, llIntervalLine, llMainActivity, llButtons;
     TextView tvTimer;
     ImageView ivHands;
-    EditText etMinuteInput, etIntervalInput;
+    EditText etPrepareInput, etMinuteInput, etIntervalInput;
     Button btnStartPause, btnReset;
-    boolean countDownIsRunning = false, countUpIsRunning = false;
-    CountDownTimer countDownTimer;
+    boolean countDownIsRunning = false, countUpIsRunning = false, preparationInProgress = false;
+    CountDownTimer countDownTimer, prepareCountDownTimer;
     Chronometer countUpTimer;
-    long timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, endTime, timeCounterUp = 0L;
+    long timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, prepareTimeLeftInMillis, endTime, prepareEndTime, timeCounterUp = 0L, prepareInput = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i(TAG, "onResume");
         NotificationManagerCompat.from(MainActivity.this).cancelAll();
-        if (!countDownIsRunning && !countUpIsRunning) {
+        if (!countDownIsRunning && !countUpIsRunning && !preparationInProgress) {
             SoundHandler.playWelcomeSound(this);
         }
         updateCountDownText(timeLeftInMillis);
@@ -63,17 +63,20 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            countUpTimer.stop();
-            countUpIsRunning = false;
-            countUpTimer.setVisibility(View.GONE);
-            tvTimer.setVisibility(View.VISIBLE);
+
+            if (countUpIsRunning) {
+                countUpIsRunning = false;
+                countUpTimer.stop();
+                countUpTimer.setVisibility(View.GONE);
+                tvTimer.setVisibility(View.VISIBLE);
+            }
 
             if (v.getId() == btnStartPause.getId()) {
                 Utils.hideKeyboard(MainActivity.this, v);
-                if (countDownIsRunning) {
+                if (countDownIsRunning || preparationInProgress) {
                     pauseTimer();
                 } else {
-                    startTimer();
+                    startPrepareTimer();
                 }
             } else if (v.getId() == btnReset.getId()) {
                 resetTimer();
@@ -86,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         tvTimer = findViewById(R.id.tvTimer);
         countUpTimer = findViewById(R.id.chTimer);
         ivHands = findViewById(R.id.ivHands);
+        llPrepareLine = findViewById(R.id.llPrepareLine);
+        etPrepareInput = findViewById(R.id.etPrepareInput);
         llMinutesLine = findViewById(R.id.llMinutesLine);
         etMinuteInput = findViewById(R.id.etMinuteInput);
         llIntervalLine = findViewById(R.id.llIntervalLine);
@@ -95,8 +100,32 @@ public class MainActivity extends AppCompatActivity {
         btnReset.setOnClickListener(buttonsListener);
         btnStartPause = findViewById(R.id.btnStartPause);
         btnStartPause.setOnClickListener(buttonsListener);
-        etMinuteInput.requestFocus();
+        etPrepareInput.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    private void startPrepareTimer() {
+        getPreparationInput();
+        prepareEndTime = System.currentTimeMillis() + prepareTimeLeftInMillis;
+
+        prepareCountDownTimer = new CountDownTimer(prepareTimeLeftInMillis, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prepareTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText(prepareTimeLeftInMillis);
+            }
+
+            @Override
+            public void onFinish() {
+                SoundHandler.playBigDing(MainActivity.this);
+                preparationInProgress = false;
+                updateButtons();
+                startTimer();
+            }
+        }.start();
+        preparationInProgress = true;
+        updateButtons();
     }
 
     private void startTimer() {
@@ -112,9 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                String done = "Done!";
-                tvTimer.setText(done);
-                Log.i(TAG, done);
+                Log.i(TAG, "Done!");
                 countDownIsRunning = false;
                 SoundHandler.playSmallDing(MainActivity.this);
                 updateButtons();
@@ -131,14 +158,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pauseTimer() {
-        countDownIsRunning = false;
-        countDownTimer.cancel();
+        if (countDownIsRunning) {
+            countDownIsRunning = false;
+            countDownTimer.cancel();
+
+        } else if (preparationInProgress) {
+            preparationInProgress = false;
+            prepareCountDownTimer.cancel();
+        }
         updateButtons();
     }
 
     private void resetTimer() {
+        prepareTimeLeftInMillis = prepareInput;
         timeLeftInMillis = timeInput;
-        updateCountDownText(timeLeftInMillis);
+        updateCountDownText(prepareTimeLeftInMillis);
         updateButtons();
     }
 
@@ -155,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateButtons() {
-        if (countDownIsRunning) {
+        if (countDownIsRunning || preparationInProgress) {
             btnReset.setVisibility(View.GONE);
             btnStartPause.setText(R.string.pause);
             btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.pause_sign), null);
@@ -165,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.play_triangle), null);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
 
-            if (timeLeftInMillis < 1000 && timeInput != -1) {
+            if ((timeLeftInMillis < 1000 || prepareTimeLeftInMillis < 1000) && timeInput != -1) {
                 btnStartPause.setVisibility(View.GONE);
             } else {
                 btnStartPause.setVisibility(View.VISIBLE);
@@ -204,31 +238,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getPreparationInput() {
+        if (!etPrepareInput.getText().toString().isEmpty()) {
+            prepareInput = Long.parseLong(etPrepareInput.getText().toString()) * 1000;
+            prepareTimeLeftInMillis = prepareInput;
+            Log.i(TAG, "Prepare time input = " + Long.parseLong(etPrepareInput.getText().toString()) + " seconds");
+            etPrepareInput.setText("");
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("timeLeftInMillis", timeLeftInMillis);
+        outState.putLong("prepareTimeLeftInMillis", prepareTimeLeftInMillis);
         outState.putLong("timeCounterUp", countUpTimer.getBase());
         outState.putLong("timeIntervalInput", timeIntervalInput);
         outState.putBoolean("countDownIsRunning", countDownIsRunning);
         outState.putBoolean("countUpIsRunning", countUpIsRunning);
+        outState.putBoolean("preparationInProgress", preparationInProgress);
         outState.putLong("endTime", endTime);
+        outState.putLong("prepareEndTime", prepareEndTime);
         outState.putLong("timeInput", timeInput);
+        outState.putLong("prepareInput", prepareInput);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         timeLeftInMillis = savedInstanceState.getLong("timeLeftInMillis");
+        prepareTimeLeftInMillis = savedInstanceState.getLong("prepareTimeLeftInMillis");
         countDownIsRunning = savedInstanceState.getBoolean("countDownIsRunning");
         countUpIsRunning = savedInstanceState.getBoolean("countUpIsRunning");
+        preparationInProgress = savedInstanceState.getBoolean("preparationInProgress");
         timeIntervalInput = savedInstanceState.getLong("timeIntervalInput");
         timeInput = savedInstanceState.getLong("timeInput");
+        prepareInput = savedInstanceState.getLong("prepareInput");
         timeCounterUp = savedInstanceState.getLong("timeCounterUp");
-        updateCountDownText(timeLeftInMillis);
         updateButtons();
 
+        if (preparationInProgress) {
+            updateCountDownText(prepareTimeLeftInMillis);
+            prepareEndTime = savedInstanceState.getLong("prepareEndTime");
+            prepareTimeLeftInMillis = prepareEndTime - System.currentTimeMillis();
+            startPrepareTimer();
+        }
+
         if (countDownIsRunning) {
+            updateCountDownText(timeLeftInMillis);
             endTime = savedInstanceState.getLong("endTime");
             timeLeftInMillis = endTime - System.currentTimeMillis();
             startTimer();
@@ -240,6 +297,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (countDownTimer != null) {
             countDownTimer.cancel();
+        }
+        if (prepareCountDownTimer != null) {
+            prepareCountDownTimer.cancel();
         }
         try {
             NotificationManagerCompat.from(MainActivity.this).notifyAll();
