@@ -12,4 +12,7 @@
     <string name="interval_time">צליל בכל:</string>
     <string name="_3">3</string>
     <string name="reset">Reset</string>
+    <string name="seconds">שניות</string>
+    <string name="_15">15</string>
+    <string name="preparation_time">זמן הכנה:</string>
 </resources>

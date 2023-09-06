@@ -39,6 +39,45 @@
         android:visibility="gone" />
 
     <LinearLayout
+        android:id="@+id/llPrepareLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="@string/preparation_time"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/etPrepareInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:importantForAutofill="no"
+            android:inputType="number|numberSigned"
+            android:minWidth="48dp"
+            android:text="@string/_15"
+            android:hint="@string/_15"
+            android:selectAllOnFocus="true"
+            android:textColorHint="#A1887F"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="@string/seconds"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/llMinutesLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

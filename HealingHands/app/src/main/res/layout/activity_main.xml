@@ -10,142 +10,196 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/tvTimer"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/black"
-        android:textSize="48sp" />
+        android:layout_gravity="center_horizontal">
 
-    <Chronometer
-        android:id="@+id/chTimer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/green"
-        android:textSize="48sp"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/ivHands"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="no"
-        android:src="@drawable/hands"
-        tools:ignore="ImageContrastCheck" />
-
-    <LinearLayout
-        android:id="@+id/llMinutesLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/healing_time"
-            android:textSize="20sp" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-        <EditText
-            android:id="@+id/etMinuteInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:importantForAutofill="no"
-            android:inputType="number|numberSigned"
-            android:minWidth="48dp"
-            android:text="@string/_60"
-            android:hint="@string/_60"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#A1887F"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:textSize="48sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:text="@string/minutes"
-            android:textSize="20sp" />
+            <Chronometer
+                android:id="@+id/chTimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/green"
+                android:textSize="48sp"
+                android:visibility="gone" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/ivHands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:src="@drawable/hands"
+                tools:ignore="ImageContrastCheck" />
 
-    <LinearLayout
-        android:id="@+id/llIntervalLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/llPrepareLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/interval_time"
-            android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/preparation_time"
+                    android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/etIntervalInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/_3"
-            android:hint="@string/_3"
-            android:importantForAutofill="no"
-            android:inputType="number|numberSigned"
-            android:minWidth="48dp"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#A1887F"
-            android:textSize="20sp" />
+                <EditText
+                    android:id="@+id/etPrepareInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/_15"
+                    android:importantForAutofill="no"
+                    android:inputType="number|numberSigned"
+                    android:minWidth="48dp"
+                    android:selectAllOnFocus="true"
+                    android:text="@string/_15"
+                    android:textColorHint="#A1887F"
+                    android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:paddingEnd="8dp"
-            android:text="@string/minutes"
-            android:textSize="20sp"
-            tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="@string/seconds"
+                    android:textSize="20sp" />
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/llButtons">
+            <LinearLayout
+                android:id="@+id/llMinutesLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnReset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue"
-            android:elevation="10dp"
-            android:text="@string/reset"
-            android:drawableRight="@drawable/reset_sign"
-            android:textSize="20sp"
-            android:layout_marginEnd="5dp"
-            tools:ignore="TextContrastCheck"
-            style="@android:style/MediaButton" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/healing_time"
+                    android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/btnStartPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
-            android:elevation="10dp"
-            android:layout_marginStart="5dp"
-            android:text="@string/start"
-            android:textSize="20sp"
-            android:drawableRight="@drawable/play_triangle"
-            tools:ignore="TextContrastCheck"
-            style="@android:style/MediaButton"/>
+                <EditText
+                    android:id="@+id/etMinuteInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/_60"
+                    android:importantForAutofill="no"
+                    android:inputType="number|numberSigned"
+                    android:minWidth="48dp"
+                    android:selectAllOnFocus="true"
+                    android:text="@string/_60"
+                    android:textColorHint="#A1887F"
+                    android:textSize="20sp" />
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="@string/minutes"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llIntervalLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/interval_time"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/etIntervalInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:hint="@string/_3"
+                    android:importantForAutofill="no"
+                    android:inputType="number|numberSigned"
+                    android:minWidth="48dp"
+                    android:selectAllOnFocus="true"
+                    android:text="@string/_3"
+                    android:textColorHint="#A1887F"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:paddingEnd="8dp"
+                    android:text="@string/minutes"
+                    android:textSize="20sp"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnReset"
+                    style="@android:style/MediaButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:backgroundTint="@color/blue"
+                    android:drawableRight="@drawable/reset_sign"
+                    android:elevation="10dp"
+                    android:text="@string/reset"
+                    android:textSize="20sp"
+                    tools:ignore="TextContrastCheck" />
+
+                <Button
+                    android:id="@+id/btnStartPause"
+                    style="@android:style/MediaButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="@color/green"
+                    android:drawableRight="@drawable/play_triangle"
+                    android:elevation="10dp"
+                    android:text="@string/start"
+                    android:textSize="20sp"
+                    tools:ignore="TextContrastCheck" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </LinearLayout>
