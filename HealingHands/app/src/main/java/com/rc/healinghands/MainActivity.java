@@ -25,6 +25,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
+
     LinearLayout llPrepareLine, llMinutesLine, llIntervalLine, llMainActivity, llButtons;
     TextView tvTimer;
     ImageView ivHands;

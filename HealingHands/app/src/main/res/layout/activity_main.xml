@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llMainActivity"
     android:layout_width="match_parent"
@@ -10,59 +10,55 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:layout_marginTop="14dp"
+            android:gravity="center_horizontal"
+            android:text="@string/_00_00"
+            android:textColor="@color/black"
+            android:textSize="48sp" />
+
+        <Chronometer
+            android:id="@+id/chTimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_horizontal"
+            android:textColor="#388E3C"
+            android:textSize="48sp" />
+
+        <ImageView
+            android:id="@+id/ivHands"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:src="@drawable/hands"
+            tools:ignore="ImageContrastCheck" />
+
+        <LinearLayout
+            android:id="@+id/llPrepareLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tvTimer"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                android:textSize="48sp" />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/preparation_time"
+                android:textSize="20sp" />
 
-            <Chronometer
-                android:id="@+id/chTimer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/green"
-                android:textSize="48sp"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/ivHands"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
-                android:src="@drawable/hands"
-                tools:ignore="ImageContrastCheck" />
-
-            <LinearLayout
-                android:id="@+id/llPrepareLine"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="@string/preparation_time"
-                    android:textSize="20sp" />
-
-                <EditText
+            <EditText
                     android:id="@+id/etPrepareInput"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,21 +82,22 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llMinutesLine"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/llMinutesLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/healing_time"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="@string/healing_time"
-                    android:textSize="20sp" />
-
-                <EditText
+            <EditText
                     android:id="@+id/etMinuteInput"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,21 +121,22 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llIntervalLine"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/llIntervalLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/interval_time"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="@string/interval_time"
-                    android:textSize="20sp" />
-
-                <EditText
+            <EditText
                     android:id="@+id/etIntervalInput"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -177,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:backgroundTint="@color/blue"
-                    android:drawableRight="@drawable/reset_sign"
+                    android:drawableEnd="@drawable/reset_sign"
                     android:elevation="10dp"
                     android:text="@string/reset"
                     android:textSize="20sp"
@@ -190,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:backgroundTint="@color/green"
-                    android:drawableRight="@drawable/play_triangle"
+                    android:drawableEnd="@drawable/play_triangle"
                     android:elevation="10dp"
                     android:text="@string/start"
                     android:textSize="20sp"
@@ -198,8 +196,6 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+    </LinearLayout>
 
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>
