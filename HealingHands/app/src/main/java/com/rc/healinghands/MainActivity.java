@@ -1,5 +1,6 @@
 package com.rc.healinghands;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivHands;
     EditText etPrepareInput, etMinuteInput, etIntervalInput;
     Button btnStartPause, btnReset;
-    boolean countDownIsRunning = false, countUpIsRunning = false, preparationInProgress = false;
+    boolean countDownIsRunning = false, countUpIsRunning = false, preparationInProgress = false, firstTimeAppLaunch = true;
     CountDownTimer countDownTimer, prepareCountDownTimer;
     Chronometer countUpTimer;
     long timeInput = -1L, timeIntervalInput = 0L, timeLeftInMillis, prepareTimeLeftInMillis, endTime, prepareEndTime, timeCounterUp = 0L, prepareInput = 0L;
@@ -48,7 +49,19 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onResume");
         NotificationManagerCompat.from(MainActivity.this).cancelAll();
         if (!countDownIsRunning && !countUpIsRunning && !preparationInProgress) {
-            SoundHandler.playWelcomeSound(this);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            etPrepareInput.setClickable(false);
+            etIntervalInput.setClickable(false);
+            etMinuteInput.setClickable(false);
+            if (firstTimeAppLaunch) {
+                SoundHandler.playWelcomeSound(this);
+                firstTimeAppLaunch = false;
+            }
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            etPrepareInput.setClickable(true);
+            etIntervalInput.setClickable(true);
+            etMinuteInput.setClickable(true);
         }
         updateCountDownText(timeLeftInMillis);
         updateButtons();
@@ -257,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean("countDownIsRunning", countDownIsRunning);
         outState.putBoolean("countUpIsRunning", countUpIsRunning);
         outState.putBoolean("preparationInProgress", preparationInProgress);
+        outState.putBoolean("firstTimeAppLaunch", firstTimeAppLaunch);
         outState.putLong("endTime", endTime);
         outState.putLong("prepareEndTime", prepareEndTime);
         outState.putLong("timeInput", timeInput);
@@ -271,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
         countDownIsRunning = savedInstanceState.getBoolean("countDownIsRunning");
         countUpIsRunning = savedInstanceState.getBoolean("countUpIsRunning");
         preparationInProgress = savedInstanceState.getBoolean("preparationInProgress");
+        firstTimeAppLaunch = savedInstanceState.getBoolean("firstTimeAppLaunch");
         timeIntervalInput = savedInstanceState.getLong("timeIntervalInput");
         timeInput = savedInstanceState.getLong("timeInput");
         prepareInput = savedInstanceState.getLong("prepareInput");
