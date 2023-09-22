@@ -13,6 +13,7 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +26,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
-
-    LinearLayout llPrepareLine, llMinutesLine, llIntervalLine, llMainActivity, llButtons;
+    ScrollView svMainActivity;
+    LinearLayout llPrepareLine, llMinutesLine, llIntervalLine, llButtons;
     TextView tvTimer;
     ImageView ivHands;
     EditText etPrepareInput, etMinuteInput, etIntervalInput;
@@ -44,6 +45,26 @@ public class MainActivity extends AppCompatActivity {
         initXml();
     }
 
+    private void initXml() {
+        svMainActivity = findViewById(R.id.svMainActivity);
+        tvTimer = findViewById(R.id.tvTimer);
+        countUpTimer = findViewById(R.id.chTimer);
+        ivHands = findViewById(R.id.ivHands);
+        llPrepareLine = findViewById(R.id.llPrepareLine);
+        etPrepareInput = findViewById(R.id.etPrepareInput);
+        llMinutesLine = findViewById(R.id.llMinutesLine);
+        etMinuteInput = findViewById(R.id.etMinuteInput);
+        llIntervalLine = findViewById(R.id.llIntervalLine);
+        etIntervalInput = findViewById(R.id.etIntervalInput);
+        llButtons = findViewById(R.id.llButtons);
+        btnReset = findViewById(R.id.btnReset);
+        btnReset.setOnClickListener(buttonsListener);
+        btnStartPause = findViewById(R.id.btnStartPause);
+        btnStartPause.setOnClickListener(buttonsListener);
+        etPrepareInput.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -51,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         NotificationManagerCompat.from(MainActivity.this).cancelAll();
         if (!countDownIsRunning && !countUpIsRunning && !preparationInProgress) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            countUpTimer.setVisibility(View.GONE);
+            tvTimer.setVisibility(View.GONE);
             etPrepareInput.setClickable(false);
             etIntervalInput.setClickable(false);
             etMinuteInput.setClickable(false);
@@ -98,29 +121,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void initXml() {
-        llMainActivity = findViewById(R.id.llMainActivity);
-        tvTimer = findViewById(R.id.tvTimer);
-        countUpTimer = findViewById(R.id.chTimer);
-        ivHands = findViewById(R.id.ivHands);
-        llPrepareLine = findViewById(R.id.llPrepareLine);
-        etPrepareInput = findViewById(R.id.etPrepareInput);
-        llMinutesLine = findViewById(R.id.llMinutesLine);
-        etMinuteInput = findViewById(R.id.etMinuteInput);
-        llIntervalLine = findViewById(R.id.llIntervalLine);
-        etIntervalInput = findViewById(R.id.etIntervalInput);
-        llButtons = findViewById(R.id.llButtons);
-        btnReset = findViewById(R.id.btnReset);
-        btnReset.setOnClickListener(buttonsListener);
-        btnStartPause = findViewById(R.id.btnStartPause);
-        btnStartPause.setOnClickListener(buttonsListener);
-        etPrepareInput.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
     private void startPrepareTimer() {
+        countUpTimer.setVisibility(View.GONE);
+        tvTimer.setVisibility(View.VISIBLE);
         getPreparationInput();
         prepareEndTime = System.currentTimeMillis() + prepareTimeLeftInMillis;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
         prepareCountDownTimer = new CountDownTimer(prepareTimeLeftInMillis, 1000) {
 
@@ -294,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         updateButtons();
 
         if (preparationInProgress) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             updateCountDownText(prepareTimeLeftInMillis);
             prepareEndTime = savedInstanceState.getLong("prepareEndTime");
             prepareTimeLeftInMillis = prepareEndTime - System.currentTimeMillis();
@@ -301,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (countDownIsRunning) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             updateCountDownText(timeLeftInMillis);
             endTime = savedInstanceState.getLong("endTime");
             timeLeftInMillis = endTime - System.currentTimeMillis();
