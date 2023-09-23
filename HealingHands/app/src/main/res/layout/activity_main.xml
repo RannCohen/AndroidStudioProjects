@@ -27,7 +27,7 @@
             android:textSize="48sp" />
 
         <Chronometer
-            android:id="@+id/chTimer"
+            android:id="@+id/countUpTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
