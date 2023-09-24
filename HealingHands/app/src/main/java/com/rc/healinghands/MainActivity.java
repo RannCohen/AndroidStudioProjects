@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.Locale;
@@ -91,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i(TAG, "onResume");
         // Try to disable notifications
-        NotificationManagerCompat.from(MainActivity.this).cancelAll();
+//        NotificationManagerCompat.from(MainActivity.this).cancelAll();
 
         if (!countDownIsRunning && !countUpIsRunning && !preparationTimerRunning) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -104,15 +103,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             enableUserInput(false);
-        }
-        updateCountDownText(timeLeftInMillis);
-        updateButtons();
-        if (countUpIsRunning) {
-            showCountUpTimer();
-            countUpTimer.setBase(timeCounterUp);
-            countUpTimer.start();
-        } else if (countDownIsRunning || preparationTimerRunning) {
-            showCountDownTimer();
         }
     }
 
@@ -145,23 +135,30 @@ public class MainActivity extends AppCompatActivity {
         prepareEndTimeMillis = System.currentTimeMillis() + prepareTimeLeftInMillis;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
-        prepareCountDownTimer = new CountDownTimer(prepareTimeLeftInMillis, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                prepareTimeLeftInMillis = millisUntilFinished;
-                updateCountDownText(prepareTimeLeftInMillis);
-            }
+        if (prepareTimeLeftInMillis != 0) {
 
-            @Override
-            public void onFinish() {
-                SoundHandler.playBigDing(MainActivity.this);
-                preparationTimerRunning = false;
-                updateButtons();
-                startTimer();
-            }
-        }.start();
-        preparationTimerRunning = true;
-        updateButtons();
+            prepareCountDownTimer = new CountDownTimer(prepareTimeLeftInMillis, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    prepareTimeLeftInMillis = millisUntilFinished;
+                    updateCountDownText(prepareTimeLeftInMillis);
+                }
+
+                @Override
+                public void onFinish() {
+                    SoundHandler.playBigDing(MainActivity.this);
+                    preparationTimerRunning = false;
+                    updateButtons();
+                    prepareTimeLeftInMillis = 0;
+                    startTimer();
+                }
+            }.start();
+            preparationTimerRunning = true;
+            updateButtons();
+        } else {
+            preparationTimerRunning = false;
+            startTimer();
+        }
     }
 
     private void startTimer() {
@@ -182,11 +179,25 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Done!");
                 countDownIsRunning = false;
                 SoundHandler.playSmallDing(MainActivity.this);
-                updateButtons();
                 showCountUpTimer();
                 countUpTimer.setBase(SystemClock.elapsedRealtime());
+                countUpTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        int minutes = (int) (elapsedMillis / 1000) / 60;
+                        int seconds = (int) (elapsedMillis / 1000) % 60;
+//                         Play intervals
+                        if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
+                            SoundHandler.playBigDing(MainActivity.this);
+                        }
+                        String elapsedTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
+                        Log.i(TAG, "Elapsed Time: " + elapsedTime);
+                    }
+                });
                 countUpTimer.start();
                 countUpIsRunning = true;
+                updateButtons();
             }
         }.start();
 
@@ -211,8 +222,11 @@ public class MainActivity extends AppCompatActivity {
         etPrepareInput.setText(R.string._15);
         etMinuteInput.setText(R.string._60);
         etIntervalInput.setText(R.string._3);
+        enableUserInput(true);
         prepareTimeLeftInMillis = getPreparationInput();
+        etPrepareInput.setText(R.string._15);
         timeLeftInMillis = getMinuteInput();
+        etMinuteInput.setText(R.string._60);
         updateCountDownText(prepareTimeLeftInMillis);
         updateButtons();
     }
@@ -296,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enableUserInput(boolean enable) {
-        Log.i(TAG, "getTimeIntervalInput(" + enable + ")");
+        Log.i(TAG, "enableUserInput(" + enable + ")");
         etPrepareInput.setEnabled(enable);
         etIntervalInput.setEnabled(enable);
         etMinuteInput.setEnabled(enable);
@@ -350,7 +364,6 @@ public class MainActivity extends AppCompatActivity {
         timeInput = savedInstanceState.getLong("timeInput");
         prepareInput = savedInstanceState.getLong("prepareInput");
         timeCounterUp = savedInstanceState.getLong("timeCounterUp");
-        updateButtons();
 
         if (preparationTimerRunning) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -358,14 +371,18 @@ public class MainActivity extends AppCompatActivity {
             prepareTimeLeftInMillis = prepareEndTimeMillis - System.currentTimeMillis();
             updateCountDownText(prepareTimeLeftInMillis);
             startPrepareTimer();
-        }
-
-        if (countDownIsRunning) {
+        } else if (countDownIsRunning) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             countDownEndTime = savedInstanceState.getLong("endTime");
             timeLeftInMillis = countDownEndTime - System.currentTimeMillis();
             updateCountDownText(timeLeftInMillis);
             startTimer();
+        } else if (countUpIsRunning) {
+            showCountUpTimer();
+            countUpTimer.setBase(timeCounterUp);
+            countUpTimer.start();
+        } else {
+            hideCounters();
         }
     }
 
@@ -378,10 +395,13 @@ public class MainActivity extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        try {
-            NotificationManagerCompat.from(MainActivity.this).notifyAll();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+        if (countUpTimer != null) {
+            countUpTimer.stop();
         }
+//        try {
+//            NotificationManagerCompat.from(MainActivity.this).notifyAll();
+//        } catch (RuntimeException e) {
+//            e.printStackTrace();
+//        }
     }
 }
