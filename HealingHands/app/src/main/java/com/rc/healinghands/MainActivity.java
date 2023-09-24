@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -101,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 SoundHandler.playWelcomeSound(this);
                 firstTimeAppLaunch = false;
             }
-            countUpTimer.setVisibility(View.GONE);
-            tvTimer.setVisibility(View.GONE);
+            hideCounters();
             enableUserInput(true);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -111,13 +108,11 @@ public class MainActivity extends AppCompatActivity {
         updateCountDownText(timeLeftInMillis);
         updateButtons();
         if (countUpIsRunning) {
-            tvTimer.setVisibility(View.GONE);
-            countUpTimer.setVisibility(View.VISIBLE);
+            showCountUpTimer();
             countUpTimer.setBase(timeCounterUp);
             countUpTimer.start();
         } else if (countDownIsRunning || preparationTimerRunning) {
-            tvTimer.setVisibility(View.VISIBLE);
-            countUpTimer.setVisibility(View.GONE);
+            showCountDownTimer();
         }
     }
 
@@ -131,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (countUpIsRunning) {
                     countUpIsRunning = false;
                     countUpTimer.stop();
-                    countUpTimer.setVisibility(View.GONE);
+                    hideCounters();
                 } else {
                     startPrepareTimer();
                 }
@@ -143,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPrepareTimer() {
         enableUserInput(false);
-        countUpTimer.setVisibility(View.GONE);
-        tvTimer.setVisibility(View.VISIBLE);
+        showCountDownTimer();
         prepareTimeLeftInMillis = getPreparationInput();
         prepareEndTimeMillis = System.currentTimeMillis() + prepareTimeLeftInMillis;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -170,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startTimer() {
         enableUserInput(false);
+        showCountDownTimer();
         timeLeftInMillis = getMinuteInput();
         countDownEndTime = System.currentTimeMillis() + timeLeftInMillis;
         timeIntervalInput = getTimeIntervalInput();
@@ -185,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 countDownIsRunning = false;
                 SoundHandler.playSmallDing(MainActivity.this);
                 updateButtons();
-                tvTimer.setVisibility(View.GONE);
-                countUpTimer.setVisibility(View.VISIBLE);
+                showCountUpTimer();
                 countUpTimer.setBase(SystemClock.elapsedRealtime());
                 countUpTimer.start();
                 countUpIsRunning = true;
@@ -297,6 +291,21 @@ public class MainActivity extends AppCompatActivity {
         etPrepareInput.setEnabled(enable);
         etIntervalInput.setEnabled(enable);
         etMinuteInput.setEnabled(enable);
+    }
+
+    private void showCountDownTimer() {
+        tvTimer.setVisibility(View.VISIBLE);
+        countUpTimer.setVisibility(View.GONE);
+    }
+
+    private void showCountUpTimer() {
+        tvTimer.setVisibility(View.GONE);
+        countUpTimer.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCounters() {
+        tvTimer.setVisibility(View.GONE);
+        countUpTimer.setVisibility(View.GONE);
     }
 
     @Override
