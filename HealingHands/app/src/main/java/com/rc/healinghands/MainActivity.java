@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener buttonsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.i(TAG, "onClick()");
             if (v.getId() == btnStartPause.getId()) {
                 Utils.hideKeyboard(MainActivity.this, v);
                 if (countDownIsRunning || preparationTimerRunning) {
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void startPrepareTimer() {
+        Log.i(TAG, "startPrepareTimer()");
         enableUserInput(false);
         showCountDownTimer();
         prepareTimeLeftInMillis = getPreparationInput();
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
+        Log.i(TAG, "startTimer()");
         enableUserInput(false);
         showCountDownTimer();
         timeLeftInMillis = getMinuteInput();
@@ -192,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pauseTimer() {
+        Log.i(TAG, "pauseTimer()");
         if (countDownIsRunning) {
             countDownIsRunning = false;
             countDownTimer.cancel();
@@ -203,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetTimer() {
+        Log.i(TAG, "resetTimer()");
         etPrepareInput.setText(R.string._15);
         etMinuteInput.setText(R.string._60);
         etIntervalInput.setText(R.string._3);
@@ -252,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long getPreparationInput() {
+        Log.i(TAG, "getPreparationInput()");
         long returnVal = 0;
         if (!etPrepareInput.getText().toString().isEmpty()) {
             returnVal = Long.parseLong(etPrepareInput.getText().toString()) * 1000;
@@ -264,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long getMinuteInput() {
+        Log.i(TAG, "getMinuteInput()");
         long returnVal = 0;
         if (!(etMinuteInput.getText().toString().isEmpty())) {
             returnVal = Long.parseLong(etMinuteInput.getText().toString()) * 1000 * 60;
@@ -276,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long getTimeIntervalInput() {
+        Log.i(TAG, "getTimeIntervalInput()");
         long returnVal = 0;
         if (!etIntervalInput.getText().toString().isEmpty()) {
             returnVal = Long.parseLong(etIntervalInput.getText().toString());
@@ -288,22 +296,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enableUserInput(boolean enable) {
+        Log.i(TAG, "getTimeIntervalInput(" + enable + ")");
         etPrepareInput.setEnabled(enable);
         etIntervalInput.setEnabled(enable);
         etMinuteInput.setEnabled(enable);
     }
 
     private void showCountDownTimer() {
+        Log.i(TAG, "showCountDownTimer()");
         tvTimer.setVisibility(View.VISIBLE);
         countUpTimer.setVisibility(View.GONE);
     }
 
     private void showCountUpTimer() {
+        Log.i(TAG, "showCountUpTimer()");
         tvTimer.setVisibility(View.GONE);
         countUpTimer.setVisibility(View.VISIBLE);
     }
 
     private void hideCounters() {
+        Log.i(TAG, "hideCounters()");
         tvTimer.setVisibility(View.GONE);
         countUpTimer.setVisibility(View.GONE);
     }
