@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     boolean countDownIsRunning = false,
             countUpIsRunning = false,
             preparationTimerRunning = false,
-            firstTimeAppLaunch = true;
+            firstTimeAppLaunch = true,
+            pausePressed = false;
     long timeInput = -1L,
             timeIntervalInput = 0L,
             timeLeftInMillis,
@@ -115,13 +116,17 @@ public class MainActivity extends AppCompatActivity {
                 if (countDownIsRunning || preparationTimerRunning) {
                     pauseTimer();
                 } else if (countUpIsRunning) {
+                    pausePressed = false;
                     countUpIsRunning = false;
                     countUpTimer.stop();
                     hideCounters();
+                    updateButtons();
                 } else {
+                    pausePressed = false;
                     startPrepareTimer();
                 }
             } else if (v.getId() == btnReset.getId()) {
+                pausePressed = false;
                 resetTimer();
             }
         }
@@ -179,25 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Done!");
                 countDownIsRunning = false;
                 SoundHandler.playSmallDing(MainActivity.this);
-                showCountUpTimer();
-                countUpTimer.setBase(SystemClock.elapsedRealtime());
-                countUpTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                    @Override
-                    public void onChronometerTick(Chronometer chronometer) {
-                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        int minutes = (int) (elapsedMillis / 1000) / 60;
-                        int seconds = (int) (elapsedMillis / 1000) % 60;
-//                         Play intervals
-                        if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
-                            SoundHandler.playBigDing(MainActivity.this);
-                        }
-                        String elapsedTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
-                        Log.i(TAG, "Elapsed Time: " + elapsedTime);
-                    }
-                });
-                countUpTimer.start();
-                countUpIsRunning = true;
-                updateButtons();
+                startCountUpTimer(0L);
             }
         }.start();
 
@@ -205,8 +192,36 @@ public class MainActivity extends AppCompatActivity {
         updateButtons();
     }
 
+    private void startCountUpTimer(Long timeCounterUp) {
+        Log.i(TAG, "startCountUpTimer()");
+        showCountUpTimer();
+        if (timeCounterUp == 0) {
+            countUpTimer.setBase(SystemClock.elapsedRealtime());
+        } else {
+            countUpTimer.setBase(timeCounterUp);
+        }
+        countUpTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                int minutes = (int) (elapsedMillis / 1000) / 60;
+                int seconds = (int) (elapsedMillis / 1000) % 60;
+//              Play intervals
+                if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
+                    SoundHandler.playBigDing(MainActivity.this);
+                }
+                String elapsedTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
+                Log.i(TAG, "Elapsed Time: " + elapsedTime);
+            }
+        });
+        countUpTimer.start();
+        countUpIsRunning = true;
+        updateButtons();
+    }
+
     private void pauseTimer() {
         Log.i(TAG, "pauseTimer()");
+        pausePressed = true;
         if (countDownIsRunning) {
             countDownIsRunning = false;
             countDownTimer.cancel();
@@ -246,13 +261,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateButtons() {
-       if (countDownIsRunning || preparationTimerRunning) {
+        if (countDownIsRunning || preparationTimerRunning) {
             btnReset.setVisibility(View.GONE);
             btnStartPause.setText(R.string.pause);
             btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.pause_sign), null);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
         } else {
-            btnStartPause.setText(R.string.start);
+            if (pausePressed) {
+                btnStartPause.setText(R.string._continue);
+            } else {
+                btnStartPause.setText(R.string.start);
+            }
             btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.play_triangle), null);
             btnStartPause.setBackgroundColor(getResources().getColor(R.color.green));
 
@@ -267,6 +286,12 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 btnReset.setVisibility(View.GONE);
             }
+        }
+        if (countUpIsRunning) {
+            btnReset.setVisibility(View.GONE);
+            btnStartPause.setText(R.string.stop);
+            btnStartPause.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.stop), null);
+            btnStartPause.setBackgroundColor(getResources().getColor(R.color.red));
         }
     }
 
@@ -345,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean("countUpIsRunning", countUpIsRunning);
         outState.putBoolean("preparationInProgress", preparationTimerRunning);
         outState.putBoolean("firstTimeAppLaunch", firstTimeAppLaunch);
+        outState.putBoolean("pausePressed", pausePressed);
         outState.putLong("endTime", countDownEndTime);
         outState.putLong("prepareEndTime", prepareEndTimeMillis);
         outState.putLong("timeInput", timeInput);
@@ -360,6 +386,7 @@ public class MainActivity extends AppCompatActivity {
         countUpIsRunning = savedInstanceState.getBoolean("countUpIsRunning");
         preparationTimerRunning = savedInstanceState.getBoolean("preparationInProgress");
         firstTimeAppLaunch = savedInstanceState.getBoolean("firstTimeAppLaunch");
+        pausePressed = savedInstanceState.getBoolean("pausePressed");
         timeIntervalInput = savedInstanceState.getLong("timeIntervalInput");
         timeInput = savedInstanceState.getLong("timeInput");
         prepareInput = savedInstanceState.getLong("prepareInput");
@@ -379,11 +406,11 @@ public class MainActivity extends AppCompatActivity {
             startTimer();
         } else if (countUpIsRunning) {
             showCountUpTimer();
-            countUpTimer.setBase(timeCounterUp);
-            countUpTimer.start();
+            startCountUpTimer(timeCounterUp);
         } else {
             hideCounters();
         }
+        updateButtons();
     }
 
     @Override
