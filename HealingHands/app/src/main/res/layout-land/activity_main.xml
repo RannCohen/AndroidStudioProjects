@@ -24,7 +24,7 @@
             android:gravity="center_horizontal"
             android:text="@string/_00_00"
             android:textColor="@color/white"
-            android:textSize="160sp" />
+            android:textSize="120sp" />
 
         <Chronometer
             android:id="@+id/countUpTimer"
@@ -33,7 +33,7 @@
             android:layout_marginTop="14dp"
             android:gravity="center_horizontal"
             android:textColor="#388E3C"
-            android:textSize="160sp" />
+            android:textSize="120sp" />
 
         <ImageView
             android:id="@+id/ivHands"
