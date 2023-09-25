@@ -14,15 +14,15 @@ public class SoundHandler {
         shalom.start();
     }
 
-    static void playBigDing(Context context) {
+    static void playIntervalSound(Context context) {
         Log.i(TAG, "Big Ding");
-        MediaPlayer big_ding = MediaPlayer.create(context, R.raw.big_ding);
+        MediaPlayer big_ding = MediaPlayer.create(context, R.raw.interval_sound);
         big_ding.start();
     }
 
-    static void playSmallDing(Context context) {
+    static void playEndSound(Context context) {
         Log.i(TAG, "Small Ding");
-        MediaPlayer small_ding = MediaPlayer.create(context, R.raw.small_ding);
+        MediaPlayer small_ding = MediaPlayer.create(context, R.raw.end_sound);
         small_ding.start();
     }
 }

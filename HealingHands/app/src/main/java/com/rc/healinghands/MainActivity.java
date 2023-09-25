@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFinish() {
-                    SoundHandler.playBigDing(MainActivity.this);
+                    SoundHandler.playIntervalSound(MainActivity.this);
                     preparationTimerRunning = false;
                     updateButtons();
                     prepareTimeLeftInMillis = 0;
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
                 Log.i(TAG, "Done!");
                 countDownIsRunning = false;
-                SoundHandler.playSmallDing(MainActivity.this);
+                SoundHandler.playEndSound(MainActivity.this);
                 startCountUpTimer(0L);
             }
         }.start();
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 int seconds = (int) (elapsedMillis / 1000) % 60;
 //              Play intervals
                 if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
-                    SoundHandler.playBigDing(MainActivity.this);
+                    SoundHandler.playIntervalSound(MainActivity.this);
                 }
                 String elapsedTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
                 Log.i(TAG, "Elapsed Time: " + elapsedTime);
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Play intervals
         if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
-            SoundHandler.playBigDing(MainActivity.this);
+            SoundHandler.playIntervalSound(MainActivity.this);
         }
         // Update the on-screen timer
         String displayTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
