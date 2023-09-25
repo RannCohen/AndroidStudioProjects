@@ -10,8 +10,8 @@ android {
         applicationId "com.rc.healinghands"
         minSdk 21
         targetSdk 33
-        versionCode 1009
-        versionName "1.0.09"
+        versionCode 1010
+        versionName "1.0.10"
         setProperty("archivesBaseName", "Healing Hands-$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
