@@ -70,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
         llButtons = findViewById(R.id.llButtons);
         // Timer displays
         tvTimer = findViewById(R.id.tvTimer);
+        tvTimer.setOnLongClickListener(toggleViewListener);
         countUpTimer = findViewById(R.id.countUpTimer);
+        countUpTimer.setOnLongClickListener(toggleViewListener);
         // Image
         ivHands = findViewById(R.id.ivHands);
         // User inputs
@@ -130,6 +132,33 @@ public class MainActivity extends AppCompatActivity {
                 pausePressed = false;
                 resetTimer();
             }
+        }
+    };
+
+    View.OnLongClickListener toggleViewListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (v.getId() == countUpTimer.getId() || v.getId() == tvTimer.getId() || v.getId() == svMainActivity.getId()) {
+                if (countDownIsRunning || preparationTimerRunning) {
+                    if (tvTimer.getCurrentTextColor() == getResources().getColor(R.color.white)) {
+                        tvTimer.setTextColor(getResources().getColor(R.color.black));
+                        btnStartPause.setVisibility(View.GONE);
+                    } else {
+                        tvTimer.setTextColor(getResources().getColor(R.color.white));
+                        btnStartPause.setVisibility(View.VISIBLE);
+                    }
+                }
+                if (countUpIsRunning) {
+                    if (countUpTimer.getCurrentTextColor() == getResources().getColor(R.color.countUpGreen)) {
+                        countUpTimer.setTextColor(getResources().getColor(R.color.black));
+                        btnStartPause.setVisibility(View.GONE);
+                    } else {
+                        countUpTimer.setTextColor(getResources().getColor(R.color.countUpGreen));
+                        btnStartPause.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            return false;
         }
     };
 

@@ -22,5 +22,6 @@
     <color name="grey">#9E9E9E</color>
     <color name="blue_grey">#607D8B</color>
     <color name="background">#fceced</color>
+    <color name="countUpGreen">#388E3C</color>
 
 </resources>
