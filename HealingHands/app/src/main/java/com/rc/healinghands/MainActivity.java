@@ -235,13 +235,16 @@ public class MainActivity extends AppCompatActivity {
             public void onChronometerTick(Chronometer chronometer) {
                 long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                 int minutes = (int) (elapsedMillis / 1000) / 60;
+                minutes %= 60;
                 int seconds = (int) (elapsedMillis / 1000) % 60;
+                int hours = (int) (elapsedMillis / (1000 * 60 * 60));
 //              Play intervals
                 if ((timeIntervalInput != 0) && (minutes % timeIntervalInput == 0) && (seconds == 0) && (minutes != 0)) {
                     SoundHandler.playIntervalSound(MainActivity.this);
                 }
-                String elapsedTime = String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
+                String elapsedTime = String.format(Locale.getDefault(), "%01d", hours) + ":" + String.format(Locale.getDefault(), "%02d", minutes) + ":" + String.format(Locale.getDefault(), "%02d", seconds);
                 Log.i(TAG, "Elapsed Time: " + elapsedTime);
+                countUpTimer.setFormat(elapsedTime);
             }
         });
         countUpTimer.start();
