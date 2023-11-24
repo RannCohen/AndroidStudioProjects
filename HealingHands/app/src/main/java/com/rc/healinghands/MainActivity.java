@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.Locale;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.i(TAG, "onResume");
         // Try to disable notifications
-//        NotificationManagerCompat.from(MainActivity.this).cancelAll();
+        NotificationManagerCompat.from(MainActivity.this).cancelAll();
 
         if (!countDownIsRunning && !countUpIsRunning && !preparationTimerRunning) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -425,10 +426,10 @@ public class MainActivity extends AppCompatActivity {
         if (countUpTimer != null) {
             countUpTimer.stop();
         }
-//        try {
-//            NotificationManagerCompat.from(MainActivity.this).notifyAll();
-//        } catch (RuntimeException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            NotificationManagerCompat.from(MainActivity.this).notifyAll();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 }
