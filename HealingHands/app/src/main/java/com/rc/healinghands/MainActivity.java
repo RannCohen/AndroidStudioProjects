@@ -143,18 +143,26 @@ public class MainActivity extends AppCompatActivity {
                     if (tvTimer.getCurrentTextColor() == getResources().getColor(R.color.white)) {
                         tvTimer.setTextColor(getResources().getColor(R.color.black));
                         btnStartPause.setVisibility(View.GONE);
+                        // Hide status bar
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
                     } else {
                         tvTimer.setTextColor(getResources().getColor(R.color.white));
                         btnStartPause.setVisibility(View.VISIBLE);
+                        // Show status bar
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     }
                 }
                 if (countUpIsRunning) {
                     if (countUpTimer.getCurrentTextColor() == getResources().getColor(R.color.countUpGreen)) {
                         countUpTimer.setTextColor(getResources().getColor(R.color.black));
                         btnStartPause.setVisibility(View.GONE);
+                        // Hide status bar
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
                     } else {
                         countUpTimer.setTextColor(getResources().getColor(R.color.countUpGreen));
                         btnStartPause.setVisibility(View.VISIBLE);
+                        // Show status bar
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     }
                 }
             }
